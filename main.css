@@ -1,0 +1,102 @@
+html {
+  background-image: url("assets/backGround.png");
+  background-size: 128px auto;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -o-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+img {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -o-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  user-select: none;
+}
+p {
+  user-select: none;
+}
+#place{
+  color:white;
+  font-size: 30px;
+  position: absolute;
+  left: 70px;
+  top: -20px;
+}
+#bag{
+  position: absolute;
+  width: auto;
+  height: 64px;
+  right: 80px;
+  top: 20px;
+}
+#pageUp{
+  position: absolute;
+  width: auto;
+  height: 32px;
+  right: 0;
+  bottom: -40px;
+}
+#pageDown{
+  position: absolute;
+  width: auto;
+  height: 32px;
+  left: -20px;
+  bottom: -40px;
+}
+#baggages{
+  color:white;
+  font-size: 15px;
+  position: absolute;
+  right: 80px;
+  top: 80px;
+  line-height: 1.2;
+}
+.buttons{
+  position: absolute;
+  height: 10vh;
+  width: 25vw;
+  padding: 10px 20px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #5574a1;
+  background-color: #d7dce0;
+  border: 100px #fff;
+  cursor: pointer;
+  border-bottom: 8px solid #8d8d8d;
+  transition: all 0.1s;
+  text-decoration: none;
+  text-align: center;
+}
+.buttons:hover {
+  background-color: #5574a1;
+  color: #d7dce0;
+}
+.buttons:active {
+  transform: translateY(4px);
+  border-bottom: 6px solid #d7dce0;
+}
+#click{
+  position: absolute;
+  color:white;
+  font-size:20px;
+  display: none;
+}
+#instruction{
+  position: absolute;
+  display: none;
+  color:white;
+  font-size:20px;
+  font-weight: 600;
+  left: 20px;
+  bottom: 0;
+}
+#save{
+  position: absolute;
+  right: 80px;
+  bottom: 20px;
+  width: auto;
+  height: 64px;
+}
