@@ -25,6 +25,14 @@ p {
   left: 70px;
   top: -20px;
 }
+#baggages{
+  color:white;
+  font-size: 15px;
+  position: absolute;
+  right: 80px;
+  top: 80px;
+  line-height: 1.2;
+}
 #bag{
   position: absolute;
   width: auto;
@@ -46,13 +54,26 @@ p {
   left: -20px;
   bottom: -40px;
 }
-#baggages{
-  color:white;
-  font-size: 15px;
+#save{
   position: absolute;
   right: 80px;
-  top: 80px;
-  line-height: 1.2;
+  bottom: 20px;
+  width: auto;
+  height: 64px;
+}
+@media (max-width: 800px) {
+  #baggages{
+    right: 10px;
+  }
+  #bag{
+    right: 10px;
+  }
+  #save{
+    right: 10px;
+  }
+  #place{
+    left: 20px;
+  }
 }
 .buttons{
   position: absolute;
@@ -88,15 +109,23 @@ p {
   position: absolute;
   display: none;
   color:white;
+  width: 60vw;
   font-size:20px;
   font-weight: 600;
   left: 20px;
   bottom: 0;
 }
-#save{
-  position: absolute;
-  right: 80px;
-  bottom: 20px;
-  width: auto;
-  height: 64px;
+@media (max-width: 500px) {
+  .buttons{
+    height: 15vh;
+  }
+}
+@media (max-width: 320px) {
+  .buttons{
+    padding: 5px 10px;
+    height: 17vh;
+  }
+  #place{
+    max-width: 120px;
+  }
 }

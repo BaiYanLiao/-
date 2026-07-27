@@ -23,18 +23,20 @@ for(let i=0; i<LSkey.length; i++){
         localStorage.setItem(LSkey[i],LSdefault[i]);
     }
 }
+var canbuy,lastSave;
 var baggageList = [];
-var button,canbuy,lastSave;
+var windowWidth = window.innerWidth;
+var windowHeight = window.innerHeight;
 var place = localStorage.getItem("place");
 var click = document.getElementById('click');
 var bagIndex = localStorage.getItem("bagIndex");
 var baggages = document.getElementById("baggages");
 var buttonIndex = localStorage.getItem("buttonIndex");
 var instruction = document.getElementById("instruction");
+document.getElementById("place").innerHTML = "造物之地 "+ place;
 var thing_name = JSON.parse(localStorage.getItem("thing_name"));
 var thing_value = JSON.parse(localStorage.getItem("thing_value"));
 var buttonLevel = JSON.parse(localStorage.getItem("buttonLevel"));
-document.getElementById("place").innerHTML="造物之地 " + place;
 for(let i=0; i<buttonLevel.length; i++){
     buttonLevel_setup(i);
 }
@@ -113,7 +115,9 @@ function baggage_setup(){
         if(!thing_name[i+(parseInt(bagIndex)*10)]){
             baggageList[i].textContent = "";
         }else{
-            baggageList[i].textContent = thing_name[i+(bagIndex*10)]+":"+thing_value[i+(bagIndex*10)];
+            baggageList[i].textContent = 
+            thing_name[i+(bagIndex*10)]+
+            ":"+thing_value[i+(bagIndex*10)];
         }
         baggageList[i].style.color="white"
     }
@@ -132,17 +136,24 @@ function baggage_format_setup(id){
 }
 function buttonLevel_setup(id){
     for(let i=0; i<buttonsList[id][3].length; i++){
-        buttonsList[id][3][i] = Math.round(Math.pow(1.3,buttonLevel[id])*beginPrice[id][i]);
+        buttonsList[id][3][i] = 
+        Math.round(Math.pow(1.3,buttonLevel[id])
+        *beginPrice[id][i]);
     }
 }
 function newButton(id){
-    button = document.createElement("button");
+    let button = document.createElement("button");
     button.id = "button"+id;
     button.className = "buttons";
-    (id & 1) === 0 ? button.style.left = "23vw" : 
-                            button.style.right = "23vw";
+    if(window.innerWidth >600){
+        (id & 1) === 0 ? button.style.left = "23vw" : 
+                        button.style.right = "23vw";
+    }else{
+        (id & 1) === 0 ? button.style.left = "3vw" : 
+                        button.style.right = "43vw";
+    }
     button.style.top = (((id & 1) === 0 ? 1 : 0)+ 
-                        Math.ceil(id/2))*15 + 7 +"vh";
+                        Math.ceil(id/2))*(window.innerWidth>500? 15:20) + 7 +"vh";
     button.textContent = buttonsList[id][1];
     buttons.appendChild(button);
     var buttonMonitor = document.getElementById("button"+id);
@@ -170,12 +181,36 @@ function newButton(id){
             click.style.top = event.clientY + 'px';
             click.textContent = "你付不起"+'"'+buttonsList[id][1]+'"'+"!";
             click.style.color = "#25415C";
-            click.style.textShadow = "-1px -1px 0 #fff,1px -1px 0 #fff,-1px  1px 0 #fff,1px  1px 0 #fff"
+            click.style.textShadow = 
+            "-1px -1px 0 #fff,"+
+            "1px -1px 0 #fff,"+
+            "-1px  1px 0 #fff,"+
+            "1px  1px 0 #fff";
             click.style.display = "block";
             transparent(click, 40,0);
         }
     });
 }
+function debounce(func, wait) {
+    let timeout;
+    return function() {
+        const context = this, args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            func.apply(context, args);
+        }, wait);
+    };
+}
+window.addEventListener('resize', debounce(function(event) {
+    if((windowWidth!=window.innerWidth) || (windowHeight!=window.innerHeight)){
+        for(let i=0; i<buttonIndex; i++){
+            document.getElementById("button"+i).remove();
+            newButton(i);
+        }
+    }
+    windowWidth = window.innerWidth;
+    windowHeight = window.innerHeight;
+}, 250));
 function save(){
     for(let i=0; i<=LSkey.length; i++){
         if(typeof(eval(LSkey[i])) !="string"){
