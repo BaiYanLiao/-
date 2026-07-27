@@ -1,18 +1,24 @@
-const LSkey = ["place","thing_name","thing_value","bagIndex","buttonIndex"];
+const LSkey = ["place","thing_name","thing_value","bagIndex","buttonIndex","buttonLevel"];
 const LSdefault =
     [
         "混沌",
         JSON.stringify(["C(碳)","H(氢)","O(氧)","N(氮)","P(磷)","S(硫)"]),
         JSON.stringify([0,0,0,0,0,0]),
-        0,0
+        0,0,JSON.stringify([])
     ];
-const buttonsList = 
+var buttonsList = 
     [
         [[2,2,2,2,2,2],"造物万岁","一款神秘游戏的第一个按钮",[1,1,1,1,1,1]],
         [[5,5,5,5,5,5],"产线全开","每次点击增加2种(每种1个)随机元素",[10,10,10,10,10,10]],
         [[5,5,5,5,5,5],"飞速生产","每次点击增加2个(随机1种)随机元素",[10,10,10,10,10,10]]
     ];
-for(let i=0; i<=LSkey.length; i++){
+var beginPrice =
+    [
+        [1,1,1,1,1,1],
+        [10,10,10,10,10,10],
+        [10,10,10,10,10,10]
+    ]
+for(let i=0; i<LSkey.length; i++){
     if(!localStorage.getItem(LSkey[i])){
         localStorage.setItem(LSkey[i],LSdefault[i]);
     }
@@ -27,7 +33,11 @@ var buttonIndex = localStorage.getItem("buttonIndex");
 var instruction = document.getElementById("instruction");
 var thing_name = JSON.parse(localStorage.getItem("thing_name"));
 var thing_value = JSON.parse(localStorage.getItem("thing_value"));
+var buttonLevel = JSON.parse(localStorage.getItem("buttonLevel"));
 document.getElementById("place").innerHTML="造物之地 " + place;
+for(let i=0; i<buttonLevel.length; i++){
+    buttonLevel_setup(i);
+}
 for(let i=0,baggage=0; i<11; i++){
     baggage = document.createElement("p");
     baggage.id = "baggage" + i;
@@ -80,7 +90,7 @@ document.getElementById('pageDown').addEventListener('click', function() {
 });
 document.getElementById('pageDown').addEventListener('mouseenter', function() {
     instruction.style.display = "block";
-    instruction.textContent = "背包翻页-上一页 当前页数 : "
+    instruction.textContent = "背包翻页-下一页 当前页数 : "
      + (parseInt(bagIndex)+1) + "/" + Math.ceil(thing_name.length/10);
 });
 document.getElementById('pageDown').addEventListener('mouseleave', function() {
@@ -120,6 +130,11 @@ function baggage_format_setup(id){
         baggageList[i].innerHTML+= "/"+buttonsList[id][3][i];
     }
 }
+function buttonLevel_setup(id){
+    for(let i=0; i<buttonsList[id][3].length; i++){
+        buttonsList[id][3][i] = Math.round(Math.pow(1.3,buttonLevel[id])*beginPrice[id][i]);
+    }
+}
 function newButton(id){
     button = document.createElement("button");
     button.id = "button"+id;
@@ -146,6 +161,8 @@ function newButton(id){
             for(let i=0;i<buttonsList[id][3].length;i++){
                 thing_value[i]-=buttonsList[id][3][i];
             }
+            buttonLevel[id]++;
+            buttonLevel_setup(id);
             baggage_setup();
             baggage_format_setup(id);
         }else{
@@ -219,6 +236,7 @@ document.addEventListener('click', function(event) {
             }
             if(a){
                 newButton(buttonIndex++);
+                buttonLevel.push(0);
             }
         }
     }
