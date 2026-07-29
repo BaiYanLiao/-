@@ -9,8 +9,8 @@ const LSdefault =
 var buttonsList = 
     [
         [[2,2,2,2,2,2],"造物万岁","一款神秘游戏的第一个按钮",[1,1,1,1,1,1]],
-        [[5,5,5,5,5,5],"产线全开","每次点击增加2种(每种1个)随机元素",[10,10,10,10,10,10]],
-        [[5,5,5,5,5,5],"飞速生产","每次点击增加2个(随机1种)随机元素",[10,10,10,10,10,10]]
+        [[5,5,5,5,5,5],"产线全开","每次点击增加2种(每种1个)随机元素",[10,10,10,10,10,10],1],
+        [[5,5,5,5,5,5],"飞速生产","每次点击增加2个(随机1种)随机元素",[10,10,10,10,10,10],1]
     ];
 var beginPrice =
     [
@@ -47,9 +47,7 @@ for(let i=0,baggage=0; i<11; i++){
     baggageList.push(baggage);
 }
 baggage_setup();
-for(let i=0; i<buttonIndex; i++){
-    newButton(i);
-}
+button_repaint(false);
 document.getElementById('bag').addEventListener('click', function() {
     bag();
 });
@@ -141,56 +139,75 @@ function buttonLevel_setup(id){
         *beginPrice[id][i]);
     }
 }
-function newButton(id){
+function button_repaint(del){
+    for(let i=0,j=0; i<buttonIndex; i++,j++){
+        if(del){
+            document.getElementById("button"+i).remove();
+        }
+        if(newButton(i,j)){
+            j--;
+        }
+    }
+}
+function newButton(id,pos){
     let button = document.createElement("button");
     button.id = "button"+id;
-    button.className = "buttons";
-    if(window.innerWidth >600){
-        (id & 1) === 0 ? button.style.left = "23vw" : 
-                        button.style.right = "23vw";
-    }else{
-        (id & 1) === 0 ? button.style.left = "3vw" : 
-                        button.style.right = "43vw";
-    }
-    button.style.top = (((id & 1) === 0 ? 1 : 0)+ 
-                        Math.ceil(id/2))*(window.innerWidth>500? 15:20) + 7 +"vh";
-    button.textContent = buttonsList[id][1];
-    buttons.appendChild(button);
-    var buttonMonitor = document.getElementById("button"+id);
-    buttonMonitor.addEventListener('mouseenter', function() {
-        instruction.innerHTML = buttonsList[id][1] +' : '+ buttonsList[id][2];
-        baggage_setup();
-        baggage_format_setup(id);
-        instruction.style.display = "block";
-    });
-    buttonMonitor.addEventListener('mouseleave', function(event) {
-        baggage_setup();
-        instruction.style.display = "none";
-    });
-    buttonMonitor.addEventListener('click', function(event) {
-        if(canbuy){
-            for(let i=0;i<buttonsList[id][3].length;i++){
-                thing_value[i]-=buttonsList[id][3][i];
-            }
-            buttonLevel[id]++;
-            buttonLevel_setup(id);
+    if(buttonsList[id][4] ? buttonLevel[id]<buttonsList[id][4] :true){
+        button.className = "buttons";
+        if(window.innerWidth >600){
+            (pos & 1) === 0 ? button.style.left = "23vw" : 
+                            button.style.right = "23vw";
+        }else{
+            (pos & 1) === 0 ? button.style.left = "3vw" : 
+                            button.style.right = "43vw";
+        }
+        button.style.top = (((pos & 1) === 0 ? 1 : 0)+ 
+                            Math.ceil(id/2))*(window.innerWidth>500? 15:20) + 7 +"vh";
+        button.textContent = buttonsList[id][1];
+        buttons.appendChild(button);
+        var buttonMonitor = document.getElementById("button"+id);
+        buttonMonitor.addEventListener('mouseenter', function() {
+            instruction.innerHTML = buttonsList[id][1] +' : '+ buttonsList[id][2];
             baggage_setup();
             baggage_format_setup(id);
-        }else{
-            click.style.left = event.clientX + 'px';
-            click.style.top = event.clientY + 'px';
-            click.textContent = "你付不起"+'"'+buttonsList[id][1]+'"'+"!";
-            click.style.color = "#25415C";
-            click.style.textShadow = 
-            "-1px -1px 0 #fff,"+
-            "1px -1px 0 #fff,"+
-            "-1px  1px 0 #fff,"+
-            "1px  1px 0 #fff";
-            click.style.display = "block";
-            transparent(click, 40,0);
-        }
-    });
+            instruction.style.display = "block";
+        });
+        buttonMonitor.addEventListener('mouseleave', function(event) {
+            baggage_setup();
+            instruction.style.display = "none";
+        });
+        buttonMonitor.addEventListener('click', function(event) {
+            if(canbuy){
+                for(let i=0;i<buttonsList[id][3].length;i++){
+                    thing_value[i]-=buttonsList[id][3][i];
+                }
+                if(buttonsList[id][4] ? ++buttonLevel[id]>=buttonsList[id][4] :false){
+                    button_repaint(true);
+                }
+                buttonLevel_setup(id);
+                baggage_setup();
+                baggage_format_setup(id);
+            }else{
+                click.style.left = event.clientX + 'px';
+                click.style.top = event.clientY + 'px';
+                click.textContent = "你付不起"+'"'+buttonsList[id][1]+'"'+"!";
+                click.style.color = "#25415C";
+                click.style.textShadow = 
+                "-1px -1px 0 #fff,"+
+                "1px -1px 0 #fff,"+
+                "-1px  1px 0 #fff,"+
+                "1px  1px 0 #fff";
+                click.style.display = "block";
+                transparent(click, 40,0);
+            }
+        });
+        return 0;
+    }else{
+        buttons.appendChild(button);
+        return 1;
+    }
 }
+/*
 function debounce(func, wait) {
     let timeout;
     return function() {
@@ -211,6 +228,7 @@ window.addEventListener('resize', debounce(function(event) {
     windowWidth = window.innerWidth;
     windowHeight = window.innerHeight;
 }, 250));
+*/
 function save(){
     for(let i=0; i<=LSkey.length; i++){
         if(typeof(eval(LSkey[i])) !="string"){
@@ -270,7 +288,7 @@ document.addEventListener('click', function(event) {
                 }
             }
             if(a){
-                newButton(buttonIndex++);
+                newButton(buttonIndex,buttonIndex++);
                 buttonLevel.push(0);
             }
         }
